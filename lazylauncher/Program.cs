@@ -54,7 +54,7 @@ namespace lazylauncher
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            ExitWithError(e.ToString(), ExitCode.UnhandledException);
+            ExitWithError(e.ExceptionObject.ToString(), ExitCode.UnhandledException);
         }
 
         static void CopyFolder(in string originPath, in string destPath)
@@ -77,8 +77,16 @@ namespace lazylauncher
 
             foreach (string filePath in Directory.EnumerateFiles(originPath))
             {
-                File.Copy(filePath, Path.Combine(destPath, Path.GetFileName(filePath)), true);
-                Console.WriteLine($"Copied file: {filePath}");
+                try
+                {
+                    File.Copy(filePath, Path.Combine(destPath, Path.GetFileName(filePath)), true);
+                    Console.WriteLine($"Copied file: {filePath}");
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"Unable to copy file at path: {filePath}");
+                    Console.Error.WriteLine(ex.ToString());
+                }
             }
         }
 
