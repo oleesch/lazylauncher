@@ -20,6 +20,8 @@ namespace lazylauncher
 
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
             Process process = Process.GetCurrentProcess();
             string processPath = process.MainModule.FileName;
             string processDirPath = Path.GetDirectoryName(processPath);
@@ -48,6 +50,11 @@ namespace lazylauncher
             Process p = Process.Start(startInfo);
             p.WaitForExit();
             Environment.Exit(p.ExitCode);
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            ExitWithError(e.ToString(), ExitCode.UnhandledException);
         }
 
         static void CopyFolder(in string originPath, in string destPath)
