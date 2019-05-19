@@ -53,6 +53,7 @@ namespace lazylauncher
                 startInfo.WorkingDirectory = config.WorkingDirPath;
                 startInfo.Arguments = string.Join(" ", args);
                 startInfo.UseShellExecute = false;
+                startInfo.WindowStyle = ProcessWindowStyle.Normal;
 
                 Process p = Process.Start(startInfo);
                 p.WaitForExit();
