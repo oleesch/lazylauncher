@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 
 using lazylauncher.Model;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace lazylauncher
 {
@@ -12,7 +13,8 @@ namespace lazylauncher
     {
         UnhandledException = 100000,
         ConfigMissing,
-        OperationError
+        OperationError,
+        ExecutableMissing
     }
     class Program
     {
@@ -38,18 +40,28 @@ namespace lazylauncher
             {
                 if (HasBeenCompleted(copyOp.ID)) continue;
 
-                CopyFolder(copyOp.OriginPath, copyOp.DestinationPath);
-
+                string originPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.OriginPath));
+                string destinationPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.DestinationPath));
+                CopyFolder(originPath, destinationPath);
+                 
                 MarkAsCompleted(copyOp.ID);
             }
 
-            ProcessStartInfo startInfo = new ProcessStartInfo(config.ExecutablePath);
-            startInfo.WorkingDirectory = config.WorkingDirPath;
-            startInfo.Arguments = string.Join(" ", args);
+            if (File.Exists(config.ExecutablePath))
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo(config.ExecutablePath);
+                startInfo.WorkingDirectory = config.WorkingDirPath;
+                startInfo.Arguments = string.Join(" ", args);
+                startInfo.UseShellExecute = false;
 
-            Process p = Process.Start(startInfo);
-            p.WaitForExit();
-            Environment.Exit(p.ExitCode);
+                Process p = Process.Start(startInfo);
+                p.WaitForExit();
+                Environment.Exit(p.ExitCode);
+            }
+            else
+            {
+                ExitWithError($"Executable path does not exit: {config.ExecutablePath}", ExitCode.ExecutableMissing);
+            }
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -103,6 +115,7 @@ namespace lazylauncher
         static void ExitWithError(in string message, in ExitCode exitCode)
         {
             Console.Error.WriteLine(message);
+            Thread.Sleep(5000);
             Environment.Exit((int)exitCode);
         }
     }

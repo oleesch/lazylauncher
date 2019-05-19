@@ -7,6 +7,15 @@ namespace lazylauncher_verify
     {
         static void Main(string[] args)
         {
+            if (args.Length == 0)
+            {
+                args = new string[]
+                {
+                    "%APPDATA%\\lazylauncher",
+                    "%APPDATA%\\lazylauncher\\someConfigDir",
+                    "%APPDATA%\\lazylauncher\\someConfigFile.txt"
+                };
+            }
             foreach (string rawPath in args)
             {
                 string path = Path.GetFullPath(Environment.ExpandEnvironmentVariables(rawPath));
