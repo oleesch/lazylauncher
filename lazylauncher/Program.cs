@@ -61,7 +61,7 @@ namespace lazylauncher
             }
             else
             {
-                ExitWithError($"Executable path does not exit: {config.ExecutablePath}", ExitCode.ExecutableMissing);
+                ExitWithError($"Executable path does not exist: {config.ExecutablePath}", ExitCode.ExecutableMissing);
             }
         }
 
