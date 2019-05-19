@@ -1,10 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" xmlns:uap6="http://schemas.microsoft.com/appx/manifest/uap/windows10/6" xmlns:uap7="http://schemas.microsoft.com/appx/manifest/uap/windows10/7" xmlns:uap8="http://schemas.microsoft.com/appx/manifest/uap/windows10/8" xmlns:mobile="http://schemas.microsoft.com/appx/manifest/mobile/windows10" xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2" xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" xmlns:rescap3="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/3" xmlns:rescap6="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/6" xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10" IgnorableNamespaces="uap8 desktop6 rescap6">
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
+  xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2" 
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" 
+  xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" 
+  xmlns:uap6="http://schemas.microsoft.com/appx/manifest/uap/windows10/6" 
+  xmlns:uap7="http://schemas.microsoft.com/appx/manifest/uap/windows10/7" 
+  xmlns:uap8="http://schemas.microsoft.com/appx/manifest/uap/windows10/8" 
+  xmlns:mobile="http://schemas.microsoft.com/appx/manifest/mobile/windows10" 
+  xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10" 
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" 
+  xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2" 
+  xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6" 
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" 
+  xmlns:rescap3="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/3" 
+  xmlns:rescap6="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities/6" 
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10" IgnorableNamespaces="uap8 desktop6 rescap6">
   <!--Package created by MSIX Packaging Tool version: 1.2019.402.0-->
-  <Identity Name="lazylauncher-verify" Publisher="CN=SOL Test Code Signing" Version="1.0.0.0" ProcessorArchitecture="x64" />
+  <Identity Name="lazylauncher-verify" Publisher="YOUR CERT CN HERE" Version="1.0.0.0" ProcessorArchitecture="x64" />
   <Properties>
     <DisplayName>Lazylauncher Verify</DisplayName>
-    <PublisherDisplayName>oleesch</PublisherDisplayName>
+    <PublisherDisplayName>YOUR CERT PUBLISHER DISPLAY NAME HERE</PublisherDisplayName>
     <Description>Reserved</Description>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -14,7 +30,9 @@
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17701.0" MaxVersionTested="10.0.18335.0" />
   </Dependencies>
-  <Capabilities><rescap:Capability Name="runFullTrust" /></Capabilities>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
   <Applications>
     <Application Id="LAZYLAUNCHERVERIFY" Executable="lazylauncher.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements BackgroundColor="transparent" DisplayName="lazylauncher-verify" Square150x150Logo="Assets\Square150x150Logo.scale-100.png" Square44x44Logo="Assets\Square44x44Logo.scale-100.png" Description="lazylauncher-verify">
