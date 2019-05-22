@@ -1,9 +1,12 @@
 # lazylauncher
-As of May 2019, MSIX does not allow to place initial configuration data in the users `%appdata%` directory. Lazylauncher exists to remedy this shortcoming by allowing you to specify file copy operations that take place on first launch of the application.
+Lazylauncher is a small executable that can be included in MSIX files to perform certain operations on launch of the packaged application.
 
-Using this approach, you can place your initial configuration data somewhere within the VFS and copy it to the appropriate `%appdata%` location when the user launches the application for the first time.
+Currently the following operations are supported:
+- Adding registry values (first app launch only)
+- Copying folders (first app launch only)
+- Passing command line arguments to the target process (every app launch)
 
-Lazylauncher remembers completed copy operations so they only get executed once.
+At the time of writing there is no easy way to include application configuration in a MSIX package that depends on the users `%appdata%` folder or `HKEY_CURRENT_USER` registry hive. Lazylauncher was created to remedy this shortcoming until Microsoft offers a first party solution for those issues.
 
 ## Download
 If you're unable to build from source you can download a zip file containing the binaries on the [github release page](https://github.com/oleesch/lazylauncher/releases).
@@ -14,7 +17,9 @@ You need the following executables which are contained in the App Certification 
 - `makeappx.exe`
 - `signtool.exe`
 
-## Usage
+# Usage
+## Add to MSIX
+In order to add Lazylauncher to your MSIX package, perform the following steps:
 1. Unpack the MSIX you need to edit:
 ```Batchfile
 > makeappx unpack /p App.msix /d AppFolder
@@ -35,3 +40,54 @@ You need the following executables which are contained in the App Certification 
 ```
 
 Here is an unpacked [example MSIX application](https://github.com/oleesch/lazylauncher/tree/master/lazylauncher-example-msix) containing all the necessary edits.
+
+## Configuration
+All configuration is done in using the `llconfig.json` file.
+
+```json
+{
+    // Set an application ID (does not have to match the MSIX AppID)
+    "ID": "ApplicationID",
+
+    // Provide the full path of the executable that should be launched by Lazylauncher
+    // If the executable is in the package root you only need to provide the name
+    "ExecutablePath": "C:\\Program Files\\lazylauncher\\lazylauncher-verify.exe",
+
+    // Specify the working directory for the executable, will default to the package root if empty
+    "WorkingDirPath": "C:\\Program Files\\lazylauncher",
+
+    // Specify command line arguments that should be passed to the process
+    "Arguments": "%APPDATA%\\lazylauncher",
+
+    // An array of copy operations that should be performed on first launch, can be empty
+    "CopyOperations": [
+        {
+            // The origin and destination directory paths
+            // (Lazylauncher currently does not support single file copy)
+            "OriginPath": "C:\\Program Files\\lazylauncher\\initialconfig",
+            "DestinationPath": "%APPDATA%\\lazylauncher"
+        }
+    ],
+
+    // An array of registry operations that should be performed on first launch, can be empty
+    "RegistryOperations": [
+        {
+            // The target registry key, hives need to be specified using the full name (e.g. HKEY_CURRENT_USER, not HKCU)
+            "KeyName": "HKEY_CURRENT_USER\\SOFTWARE\\lazylauncher-verify",
+
+            // The target value name
+            "ValueName": "UpdateCheck",
+
+            // The target value
+            "Value": "0",
+
+            // The target value kind, has to be one of the following: String, ExpandString, Binary, DWord, QWord
+            // Multistring is not supported yet
+            "ValueKind": "DWord"
+        }
+    ]
+}
+```
+
+## Logging
+Lazylauncher provides a logile in `%temp%\lazylauncher.log`. Note that `%temp%` isn't affected by copy on write and can be read from outside the app container.
