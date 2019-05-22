@@ -1,12 +1,12 @@
 # lazylauncher
-Lazylauncher is a small executable that can be included in MSIX files to perform certain operations on launch of the packaged application.
+Lazylauncher is a small executable that can be included in MSIX packages to perform certain operations on launch of the application.
 
 Currently the following operations are supported:
 - Adding registry values (first app launch only)
 - Copying folders (first app launch only)
 - Passing command line arguments to the target process (every app launch)
 
-At the time of writing there is no easy way to include application configuration in a MSIX package that depends on the users `%appdata%` folder or `HKEY_CURRENT_USER` registry hive. Lazylauncher was created to remedy this shortcoming until Microsoft offers a first party solution for those issues.
+At the time of writing there is no easy way to include application configuration in a MSIX package that depends on the users `%appdata%` folder or `HKEY_CURRENT_USER` registry hive. Lazylauncher was created to remedy this shortcoming until Microsoft offers a first party solution.
 
 ## Download
 If you're unable to build from source you can download a zip file containing the binaries on the [github release page](https://github.com/oleesch/lazylauncher/releases).
@@ -42,7 +42,7 @@ In order to add Lazylauncher to your MSIX package, perform the following steps:
 Here is an unpacked [example MSIX application](https://github.com/oleesch/lazylauncher/tree/master/lazylauncher-example-msix) containing all the necessary edits.
 
 ## Configuration
-All configuration is done in using the `llconfig.json` file.
+All configuration is done in the `llconfig.json` file.
 
 ```jsonc
 {
