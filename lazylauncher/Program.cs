@@ -54,7 +54,7 @@ namespace lazylauncher
             if (File.Exists(config.ExecutablePath))
             {
                 ProcessStartInfo startInfo = new ProcessStartInfo(config.ExecutablePath);
-                startInfo.WorkingDirectory = config.WorkingDirPath;
+                startInfo.WorkingDirectory = string.IsNullOrEmpty(config.WorkingDirPath) ? processDirPath : config.WorkingDirPath;
                 string arguments = config.Arguments;
                 if (args.Length > 0)
                 {
