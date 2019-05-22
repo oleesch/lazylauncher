@@ -17,6 +17,7 @@
         public string ID { get; set; }
         public string ExecutablePath { get; set; }
         public string WorkingDirPath { get; set; }
+        public string Arguments { get; set; }
         public CopyOperation[] CopyOperations { get; set; }
     }
 }

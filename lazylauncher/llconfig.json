@@ -2,6 +2,7 @@
   "ID": "ApplicationID",
   "ExecutablePath": "C:\\Program Files\\lazylauncher\\lazylauncher-verify.exe",
   "WorkingDirPath": "C:\\Program Files\\lazylauncher",
+  "Arguments": "%APPDATA%\\lazylauncher",
   "CopyOperations": [
     {
       "ID": "AppData",
