@@ -18,11 +18,18 @@ namespace lazylauncher
     }
     class Program
     {
-        private static string _regKey = Path.Combine("HKEY_CURRENT_USER", "SOFTWARE", "lazylauncher");
+        private static readonly string _regKey = Path.Combine("HKEY_CURRENT_USER", "SOFTWARE", "lazylauncher");
+        private static readonly string _logPath = Path.Combine(Environment.GetEnvironmentVariable("temp"), "lazylauncher.log");
 
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            // Overwriting the logfile on launch seems sensible as writes to %temp% aren't affected by copy on write
+            if (File.Exists(_logPath))
+            {
+                File.Delete(_logPath);
+            }
 
             Process process = Process.GetCurrentProcess();
             string processPath = process.MainModule.FileName;
@@ -33,6 +40,7 @@ namespace lazylauncher
             {
                 ExitWithError($"Could not find file at path: {configPath}", ExitCode.ConfigMissing);
             }
+            WriteLog($"Reading config from path [{configPath}]");
             string rawConfig = File.ReadAllText(configPath);
             LauncherConfig config = JsonConvert.DeserializeObject<LauncherConfig>(rawConfig);
 
@@ -56,8 +64,11 @@ namespace lazylauncher
                 startInfo.UseShellExecute = false;
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
 
+                WriteLog($"Start process [{startInfo.FileName}] with arguments [{startInfo.Arguments}] and working dir [{startInfo.WorkingDirectory}]");
                 Process p = Process.Start(startInfo);
                 p.WaitForExit();
+
+                WriteLog($"Process exited with exit code: {p.ExitCode}");
                 Environment.Exit(p.ExitCode);
             }
             else
@@ -66,12 +77,27 @@ namespace lazylauncher
             }
         }
 
+        private static void WriteLog(string message, in bool error = false)
+        {
+            if (error)
+            {
+                message = $"ERROR: {message}";
+                Console.Error.WriteLine(message);
+            }
+            else
+            {
+                Console.WriteLine(message);
+            }
+            File.AppendAllLines(_logPath, new string[] { string.Format("{0} > {1}", DateTime.Now.ToString("o"), message) });
+        }
+
         private static void ProcessCopyOperations(in CopyOperation[] copyOperations)
         {
             foreach (CopyOperation copyOp in copyOperations)
             {
                 string originPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.OriginPath));
                 string destinationPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.DestinationPath));
+                WriteLog($"Copy from [{originPath}] to [{destinationPath}]");
                 CopyFolder(originPath, destinationPath);
             }
         }
@@ -83,6 +109,7 @@ namespace lazylauncher
                 RegistryValueKind valueKind = new RegistryValueKind();
                 if (Enum.TryParse(registryOp.ValueKind, out valueKind))
                 {
+                    WriteLog($"Set value [{registryOp.ValueName}] at key [{registryOp.KeyName}] to [{registryOp.Value}] as [{valueKind}]");
                     Registry.SetValue(registryOp.KeyName, registryOp.ValueName, registryOp.Value, valueKind);
                 }
                 else
@@ -107,7 +134,7 @@ namespace lazylauncher
             if (!Directory.Exists(destPath))
             {
                 Directory.CreateDirectory(destPath);
-                Console.WriteLine($"Created directory: {destPath}");
+                WriteLog($"Created directory: {destPath}");
             }
 
             foreach (string dirPath in Directory.EnumerateDirectories(originPath))
@@ -120,12 +147,12 @@ namespace lazylauncher
                 try
                 {
                     File.Copy(filePath, Path.Combine(destPath, Path.GetFileName(filePath)), true);
-                    Console.WriteLine($"Copied file: {filePath}");
+                    WriteLog($"Copied file: {filePath}");
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine($"Unable to copy file at path: {filePath}");
-                    Console.Error.WriteLine(ex.ToString());
+                    WriteLog($"Unable to copy file at path: {filePath}", true);
+                    WriteLog(ex.ToString(), true);
                 }
             }
         }
@@ -142,7 +169,7 @@ namespace lazylauncher
 
         static void ExitWithError(in string message, in ExitCode exitCode)
         {
-            Console.Error.WriteLine(message);
+            WriteLog(message, true);
             Thread.Sleep(5000);
             Environment.Exit((int)exitCode);
         }
