@@ -36,16 +36,8 @@ namespace lazylauncher
             string rawConfig = File.ReadAllText(configPath);
             LauncherConfig config = JsonConvert.DeserializeObject<LauncherConfig>(rawConfig);
 
-            foreach (CopyOperation copyOp in config.CopyOperations)
-            {
-                if (HasBeenCompleted(copyOp.ID)) continue;
-
-                string originPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.OriginPath));
-                string destinationPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.DestinationPath));
-                CopyFolder(originPath, destinationPath);
-                 
-                MarkAsCompleted(copyOp.ID);
-            }
+            ProcessCopyOperations(config.CopyOperations);
+            ProcessRegistryOperations(config.RegistryOperations);
 
             if (File.Exists(config.ExecutablePath))
             {
@@ -67,6 +59,40 @@ namespace lazylauncher
             else
             {
                 ExitWithError($"Executable path does not exist: {config.ExecutablePath}", ExitCode.ExecutableMissing);
+            }
+        }
+
+        private static void ProcessCopyOperations(in CopyOperation[] copyOperations)
+        {
+            foreach (CopyOperation copyOp in copyOperations)
+            {
+                if (HasBeenCompleted(copyOp.ID)) continue;
+
+                string originPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.OriginPath));
+                string destinationPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.DestinationPath));
+                CopyFolder(originPath, destinationPath);
+
+                MarkAsCompleted(copyOp.ID);
+            }
+        }
+
+        private static void ProcessRegistryOperations(in RegistryOperation[] registryOperations)
+        {
+            foreach (RegistryOperation registryOp in registryOperations)
+            {
+                if (HasBeenCompleted(registryOp.ID)) continue;
+
+                RegistryValueKind valueKind = new RegistryValueKind();
+                if (Enum.TryParse(registryOp.ValueKind, out valueKind))
+                {
+                    Registry.SetValue(registryOp.KeyName, registryOp.ValueName, registryOp.Value, valueKind);
+                }
+                else
+                {
+                    ExitWithError($"Error parsing value kind: {registryOp.ValueKind}", ExitCode.OperationError);
+                }
+
+                MarkAsCompleted(registryOp.ID);
             }
         }
 
