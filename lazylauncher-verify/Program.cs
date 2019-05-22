@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.IO;
 
 namespace lazylauncher_verify
@@ -7,16 +8,21 @@ namespace lazylauncher_verify
     {
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length > 0)
             {
-                args = new string[]
+                foreach (string arg in args)
                 {
-                    "%APPDATA%\\lazylauncher",
-                    "%APPDATA%\\lazylauncher\\someConfigDir",
-                    "%APPDATA%\\lazylauncher\\someConfigFile.txt"
-                };
+                    Console.WriteLine(arg);
+                }
             }
-            foreach (string rawPath in args)
+
+            string[] pathsToVerify = new string[]
+            {
+                "%APPDATA%\\lazylauncher",
+                "%APPDATA%\\lazylauncher\\someConfigDir",
+                "%APPDATA%\\lazylauncher\\someConfigFile.txt"
+            };
+            foreach (string rawPath in pathsToVerify)
             {
                 string path = Path.GetFullPath(Environment.ExpandEnvironmentVariables(rawPath));
                 if (File.Exists(path))
@@ -32,8 +38,8 @@ namespace lazylauncher_verify
                     Console.Error.WriteLine($"Unable to find: {path}");
                 }
             }
-            Console.Write("Any key to exit...");
 
+            Console.Write("Any key to exit...");
             _ = Console.ReadKey(true);
         }
     }
