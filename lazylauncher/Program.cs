@@ -36,8 +36,12 @@ namespace lazylauncher
             string rawConfig = File.ReadAllText(configPath);
             LauncherConfig config = JsonConvert.DeserializeObject<LauncherConfig>(rawConfig);
 
-            ProcessCopyOperations(config.CopyOperations);
-            ProcessRegistryOperations(config.RegistryOperations);
+            if (!HasBeenCompleted(config.ID))
+            {
+                ProcessCopyOperations(config.CopyOperations);
+                ProcessRegistryOperations(config.RegistryOperations);
+                MarkAsCompleted(config.ID);
+            }
 
             if (File.Exists(config.ExecutablePath))
             {
@@ -66,13 +70,9 @@ namespace lazylauncher
         {
             foreach (CopyOperation copyOp in copyOperations)
             {
-                if (HasBeenCompleted(copyOp.ID)) continue;
-
                 string originPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.OriginPath));
                 string destinationPath = Path.GetFullPath(Environment.ExpandEnvironmentVariables(copyOp.DestinationPath));
                 CopyFolder(originPath, destinationPath);
-
-                MarkAsCompleted(copyOp.ID);
             }
         }
 
@@ -80,8 +80,6 @@ namespace lazylauncher
         {
             foreach (RegistryOperation registryOp in registryOperations)
             {
-                if (HasBeenCompleted(registryOp.ID)) continue;
-
                 RegistryValueKind valueKind = new RegistryValueKind();
                 if (Enum.TryParse(registryOp.ValueKind, out valueKind))
                 {
@@ -91,8 +89,6 @@ namespace lazylauncher
                 {
                     ExitWithError($"Error parsing value kind: {registryOp.ValueKind}", ExitCode.OperationError);
                 }
-
-                MarkAsCompleted(registryOp.ID);
             }
         }
 

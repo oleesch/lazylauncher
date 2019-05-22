@@ -1,20 +1,13 @@
 ﻿namespace lazylauncher.Model
 {
-    interface IOperation
+    class CopyOperation
     {
-        string ID { get; }
-    }
-
-    class CopyOperation: IOperation
-    {
-        public string ID { get; set; }
         public string OriginPath { get; set; }
         public string DestinationPath { get; set; }
     }
 
-    class RegistryOperation : IOperation
+    class RegistryOperation
     {
-        public string ID { get; set; }
         public string KeyName { get; set; }
         public string ValueName { get; set; }
         public string Value { get; set; }

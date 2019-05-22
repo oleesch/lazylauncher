@@ -5,21 +5,18 @@
   "Arguments": "%APPDATA%\\lazylauncher",
   "CopyOperations": [
     {
-      "ID": "AppData",
       "OriginPath": "C:\\Program Files\\lazylauncher\\initialconfig",
       "DestinationPath": "%APPDATA%\\lazylauncher"
     }
   ],
   "RegistryOperations": [
     {
-      "ID": "DisableUpdateCheck",
       "KeyName": "HKEY_CURRENT_USER\\SOFTWARE\\lazylauncher-verify",
       "ValueName": "UpdateCheck",
       "Value": "0",
       "ValueKind": "DWord"
     },
     {
-      "ID": "SetServerFQDN",
       "KeyName": "HKEY_CURRENT_USER\\SOFTWARE\\lazylauncher-verify",
       "ValueName": "ServerFQDN",
       "Value": "someserver.somedomain.wherever",
