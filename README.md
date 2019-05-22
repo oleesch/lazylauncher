@@ -25,7 +25,7 @@ In order to add Lazylauncher to your MSIX package, perform the following steps:
 > makeappx unpack /p App.msix /d AppFolder
 ```
 2. Copy and paste the files `lazylauncher.exe`,`llconfig.json` and `Newtonsoft.Json.dll` into the `AppFolder` directory
-3. Edit the file `AppFolder\llconfig.json` to include the correct executable paths and copy operations
+3. Edit the file `AppFolder\llconfig.json` to include the correct executable paths and operations
 4. Edit the file `AppFolder\AppManifest.xml` and replace the "Executable" attribute to point to `lazylauncher.exe`, i.e.:
 ```XML
 <Application Id="YourApplication" Executable="lazylauncher.exe" EntryPoint="Windows.FullTrustApplication">
@@ -44,7 +44,7 @@ Here is an unpacked [example MSIX application](https://github.com/oleesch/lazyla
 ## Configuration
 All configuration is done in using the `llconfig.json` file.
 
-```json
+```jsonc
 {
     // Set an application ID (does not have to match the MSIX AppID)
     "ID": "ApplicationID",
