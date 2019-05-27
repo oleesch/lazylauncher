@@ -34,6 +34,8 @@ namespace lazylauncher
             Process process = Process.GetCurrentProcess();
             string processPath = process.MainModule.FileName;
             string processDirPath = Path.GetDirectoryName(processPath);
+            Directory.SetCurrentDirectory(processDirPath);
+
             string configPath = Path.Combine(processDirPath, "llconfig.json");
 
             if (!File.Exists(configPath))
