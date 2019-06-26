@@ -1,4 +1,7 @@
-﻿namespace lazylauncher.Model
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
+
+namespace lazylauncher.Model
 {
     class CopyOperation
     {
@@ -20,6 +23,10 @@
         public string ExecutablePath { get; set; }
         public string WorkingDirPath { get; set; }
         public string Arguments { get; set; }
+
+        [DefaultValue(false)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        public bool UseShellExecute { get; set; }
         public CopyOperation[] CopyOperations { get; set; }
         public RegistryOperation[] RegistryOperations { get; set; }
     }

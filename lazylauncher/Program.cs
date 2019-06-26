@@ -63,15 +63,23 @@ namespace lazylauncher
                     arguments = arguments + " " + string.Join(" ", args);
                 }
                 startInfo.Arguments = arguments;
-                startInfo.UseShellExecute = false;
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
 
-                WriteLog($"Start process [{startInfo.FileName}] with arguments [{startInfo.Arguments}] and working dir [{startInfo.WorkingDirectory}]");
-                Process p = Process.Start(startInfo);
-                p.WaitForExit();
-
-                WriteLog($"Process exited with exit code: {p.ExitCode}");
-                Environment.Exit(p.ExitCode);
+                if (!(config.UseShellExecute))
+                {
+                    startInfo.UseShellExecute = false;
+                    WriteLog($"Start process [{startInfo.FileName}] with arguments [{startInfo.Arguments}] and working dir [{startInfo.WorkingDirectory}]");
+                    Process p = Process.Start(startInfo);
+                    p.WaitForExit();
+                    WriteLog($"Process exited with exit code: {p.ExitCode}");
+                    Environment.Exit(p.ExitCode);
+                } else
+                {
+                    startInfo.UseShellExecute = true;
+                    WriteLog($"Start process [{startInfo.FileName}] with arguments [{startInfo.Arguments}] and working dir [{startInfo.WorkingDirectory}] using shell execute");
+                    Process.Start(startInfo);
+                    Environment.Exit(0);
+                }
             }
             else
             {
