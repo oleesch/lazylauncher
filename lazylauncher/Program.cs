@@ -60,7 +60,10 @@ namespace lazylauncher
                 string arguments = config.Arguments;
                 if (args.Length > 0)
                 {
-                    arguments = arguments + " " + string.Join(" ", args);
+                    foreach (var arg in args)
+                    {
+                        arguments += " \"" + arg + "\"";
+                    }
                 }
                 startInfo.Arguments = arguments;
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
