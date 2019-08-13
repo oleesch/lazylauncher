@@ -5,6 +5,7 @@ Currently the following operations are supported:
 - Adding registry values (first app launch only)
 - Copying folders (first app launch only)
 - Passing command line arguments to the target process (every app launch)
+- Modifying environment variables of the target process (every app launch)
 
 At the time of writing there is no easy way to include application configuration in a MSIX package that depends on the users `%appdata%` folder or `HKEY_CURRENT_USER` registry hive. Lazylauncher was created to remedy this shortcoming until Microsoft offers a first party solution.
 
@@ -84,6 +85,24 @@ All configuration is done in the `llconfig.json` file.
             // The target value kind, has to be one of the following: String, ExpandString, Binary, DWord, QWord
             // Multistring is not supported yet
             "ValueKind": "DWord"
+        }
+    ],
+    
+    // An array of environment variables that should be set during every app launch, can be empty
+    "EnvironmentVariables": [
+        {
+            // The name of the environment variable to modify
+            "Name": "LL_EXAMPLE",
+            
+            // The value that should be set or appended. You can use the variables "{}" and "{}" which will be replaced at runtime:
+            // {llWorkingDirPath}: Is replaced with the working directory path of the target process
+            // {llRootPath}: Is replaced with the package root directory path
+            "Value": "ThePackageRootPath:{llRootPath}",
+            
+            // The action that should be performed, can be "Append" or "Replace"
+            // Append: The value is appended to the end of the current value, if the variable doesn't exist it will be created.
+            // Replace: The value replaces the current value, if the variable doesn't exist it will be created.
+            "Action": "Replace"
         }
     ]
 }
