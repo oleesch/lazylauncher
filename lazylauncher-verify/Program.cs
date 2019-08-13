@@ -39,6 +39,25 @@ namespace lazylauncher_verify
                 }
             }
 
+            string[] environmentVariablesToVerify = new string[]
+            {
+                "PATH",
+                "LL_EXAMPLE"
+            };
+
+            foreach (var variable in environmentVariablesToVerify)
+            {
+                var value = Environment.GetEnvironmentVariable(variable);
+                if (!string.IsNullOrEmpty(value))
+                {
+                    Console.WriteLine($"Found variable [{variable}] with content: {value}");
+                }
+                else
+                {
+                    Console.Error.WriteLine($"Unable to find environment variable: {variable}");
+                }
+            }
+
             Console.Write("Any key to exit...");
             _ = Console.ReadKey(true);
         }

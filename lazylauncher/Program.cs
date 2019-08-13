@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using lazylauncher.Model;
 using Microsoft.Win32;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace lazylauncher
 {
@@ -68,7 +69,27 @@ namespace lazylauncher
                 startInfo.Arguments = arguments;
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
 
-                if (!(config.UseShellExecute))
+                var useShellExeute = config.UseShellExecute;
+
+                foreach (var variable in config.EnvironmentVariables)
+                {
+                    // When modifying environment variables, using shell execute is illegal!
+                    useShellExeute = false;
+
+                    if ((startInfo.EnvironmentVariables.ContainsKey(variable.Name)) 
+                        && (variable.Action == EnvironmentVariableAction.Append))
+                    {
+                        WriteLog($"Appending environment variable [{variable.Name}] with value [{variable.Value}]");
+                        startInfo.EnvironmentVariables[variable.Name] += variable.Value;
+                    }
+                    else
+                    {
+                        WriteLog($"Setting environment variable [{variable.Name}] to value [{variable.Value}]");
+                        startInfo.EnvironmentVariables[variable.Name] = variable.Value;
+                    }
+                }
+
+                if (!(useShellExeute))
                 {
                     startInfo.UseShellExecute = false;
                     WriteLog($"Start process [{startInfo.FileName}] with arguments [{startInfo.Arguments}] and working dir [{startInfo.WorkingDirectory}]");

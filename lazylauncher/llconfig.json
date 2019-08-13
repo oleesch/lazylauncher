@@ -22,5 +22,17 @@
       "Value": "someserver.somedomain.wherever",
       "ValueKind": "String"
     }
+  ],
+  "EnvironmentVariables": [
+    {
+      "Name": "PATH",
+      "Value": ";C:\\temp",
+      "Action": "Append"
+    },
+    {
+      "Name": "LL_EXAMPLE",
+      "Value": "ExampleValue",
+      "Action": "Replace"
+    }
   ]
 }
