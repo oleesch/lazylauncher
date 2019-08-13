@@ -94,8 +94,10 @@ All configuration is done in the `llconfig.json` file.
             // The name of the environment variable to modify
             "Name": "LL_EXAMPLE",
             
-            // The value that should be set or appended
-            "Value": "SomeExampleVariableValue",
+            // The value that should be set or appended. You can use the variables "{}" and "{}" which will be replaced at runtime:
+            // {llWorkingDirPath}: Is replaced with the working directory path of the target process
+            // {llRootPath}: Is replaced with the package root directory path
+            "Value": "ThePackageRootPath:{llRootPath}",
             
             // The action that should be performed, can be "Append" or "Replace"
             // Append: The value is appended to the end of the current value, if the variable doesn't exist it will be created.
