@@ -76,16 +76,20 @@ namespace lazylauncher
                     // When modifying environment variables, using shell execute is illegal!
                     useShellExeute = false;
 
+                    var value = variable.Value
+                        .Replace("{llWorkingDirPath}", startInfo.WorkingDirectory)
+                        .Replace("{llRootPath}", processDirPath);
+
                     if ((startInfo.EnvironmentVariables.ContainsKey(variable.Name)) 
                         && (variable.Action == EnvironmentVariableAction.Append))
                     {
-                        WriteLog($"Appending environment variable [{variable.Name}] with value [{variable.Value}]");
-                        startInfo.EnvironmentVariables[variable.Name] += variable.Value;
+                        WriteLog($"Appending environment variable [{variable.Name}] with value [{value}]");
+                        startInfo.EnvironmentVariables[variable.Name] += value;
                     }
                     else
                     {
-                        WriteLog($"Setting environment variable [{variable.Name}] to value [{variable.Value}]");
-                        startInfo.EnvironmentVariables[variable.Name] = variable.Value;
+                        WriteLog($"Setting environment variable [{variable.Name}] to value [{value}]");
+                        startInfo.EnvironmentVariables[variable.Name] = value;
                     }
                 }
 
